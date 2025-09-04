@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EDC AI Assistant - John Doe</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #020617; /* slate-950 */
+        }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.6); /* slate-900 with transparency */
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(51, 65, 85, 0.5); /* slate-700 with transparency */
+        }
+        .path-glow {
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4), 0 0 5px rgba(56, 189, 248, 0.6);
+        }
+        .path-node-glow {
+             box-shadow: 0 0 15px rgba(56, 189, 248, 0.6);
+        }
+         /* For custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b; /* slate-800 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569; /* slate-600 */
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b; /* slate-500 */
+        }
+    </style>
+</head>
+<body class="text-slate-200 bg-slate-950">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+        
+        <!-- Header Section -->
+        <header class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold text-white">EDC Gen AI Portal</h1>
+                <p class="text-slate-400">A dynamic simulation of GenAI.</p>
+            </div>
+            <div class="flex items-center gap-4">
+                <div class="text-right hidden sm:block">
+                    <p class="font-semibold text-white">John Doe</p>
+                    <p class="text-sm text-slate-400">AI Specialist</p>
+                </div>
+                <img src="https://placehold.co/48x48/64748B/FFFFFF?text=JD" alt="User Avatar" class="w-12 h-12 rounded-full border-2 border-slate-600">
+            </div>
+        </header>
+
+        <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Left Column: Pathfinder & Sandbox -->
+            <div class="lg:col-span-2 flex flex-col gap-6">
+
+                <!-- Goal Definition Card -->
+                <div class="glass-card p-6 rounded-xl">
+                    <div class="flex items-start gap-4">
+                        <i data-lucide="compass" class="w-8 h-8 text-sky-400 mt-1"></i>
+                        <div>
+                            <h2 class="text-xl font-bold text-white mb-2">Onbording - 101</h2>
+                            <p class="text-slate-400 mb-4">Your step-by-step guide to life in EDC.</p>
+                            <div class="flex flex-col md:flex-row items-center gap-4 bg-slate-900/80 p-4 rounded-lg">
+                                <div class="flex items-center gap-3 text-sm text-slate-400 flex-1">
+                                    <span class="font-semibold">FROM:</span>
+                                    <span>New Joiner</span>
+                                </div>
+                                <i data-lucide="arrow-right" class="text-slate-500 hidden md:block"></i>
+                                <div class="flex items-center gap-3 text-sm text-sky-400 flex-1">
+                                    <span class="font-semibold">TO:</span>
+                                    <span class="font-bold">GenAI Expert</span>
+                                </div>
+                                <button class="bg-slate-700 hover:bg-slate-600 text-white text-sm px-3 py-1.5 rounded-md transition-colors">Change Goal</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Onboarding Journey Visualization Module -->
+                <div class="glass-card p-6 rounded-xl">
+                    <div class="flex items-center gap-4 mb-4">
+                        <i data-lucide="git-branch-plus" class="w-6 h-6 text-sky-400"></i>
+                        <h2 class="text-xl font-bold text-white">The Pathfinder: Visualizing Your Future</h2>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-6">Your initital onboarding requires completion of the trainings mentioned below</p>
+                    
+                    <!-- Path A: Recommended -->
+                    <div class="mb-8">
+                        <p class="text-sm font-semibold text-sky-400 mb-3">PATH A: RECOMMENDED (Est. 4 days assuming 2 hours per day)</p>
+                        <div class="flex items-center gap-2 md:gap-4">
+                            <!-- Node 1 -->
+                            <div class="text-center w-1/4">
+                                <div class="path-node-glow bg-sky-500 text-white p-2 rounded-full w-10 h-10 mx-auto flex items-center justify-center mb-2">
+                                    <i data-lucide="user-check"></i>
+                                </div>
+                                <p class="text-xs md:text-sm font-semibold text-white">You are here</p>
+                                <p class="text-xs text-slate-400">HR Onboarding</p>
+                            </div>
+                            <!-- Connector -->
+                            <div class="flex-1 h-1 path-glow bg-sky-500 rounded-full"></div>
+                            <!-- Node 2 -->
+                             <div class="text-center w-1/4">
+                                <div class="path-node-glow bg-sky-900 border-2 border-sky-500 text-sky-400 p-2 rounded-full w-10 h-10 mx-auto flex items-center justify-center mb-2">
+                                    <i data-lucide="arrow-up-circle"></i>
+                                </div>
+                                <p class="text-xs md:text-sm font-semibold text-white">Next Step: Training #1</p>
+                                <p class="text-xs text-slate-400">EDC Benefits</p>
+                            </div>
+                             <!-- Connector -->
+                            <div class="flex-1 h-1 path-glow bg-sky-500 rounded-full"></div>
+                             <!-- Node 3 -->
+                             <div class="text-center w-1/4">
+                                <div class="bg-slate-700 text-slate-400 p-2 rounded-full w-10 h-10 mx-auto flex items-center justify-center mb-2">
+                                    <i data-lucide="briefcase"></i>
+                                </div>
+                                <p class="text-xs md:text-sm font-semibold text-white">Training #2</p>
+                                <p class="text-xs text-slate-400">Cybersecurity 101</p>
+                            </div>
+                             <!-- Connector -->
+                            <div class="flex-1 h-1 bg-slate-700 rounded-full"></div>
+                            <!-- Node 4 -->
+                             <div class="text-center w-1/4">
+                                <div class="bg-slate-700 text-slate-400 p-2 rounded-full w-10 h-10 mx-auto flex items-center justify-center mb-2">
+                                    <i data-lucide="flag"></i>
+                                </div>
+                                <p class="text-xs md:text-sm font-semibold text-white">Training #3</p>
+                                <p class="text-xs text-slate-400">Ethics 101</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Path B: Alternate -->
+                    <div>
+                        <p class="text-sm font-semibold text-slate-400 mb-3">PATH B: ALTERNATE (Est. 2 days assuming 4 hours per day)</p>
+                         <div class="flex items-center gap-2 md:gap-4">
+                            <!-- Node 1 -->
+                            <div class="text-center w-1/4">
+                                <div class="bg-sky-500 text-white p-2 rounded-full w-10 h-10 mx-auto flex items-center justify-center mb-2">
+                                    <i data-lucide="user-check"></i>
+                                </div>
+                                <p class="text-xs md:text-sm font-semibold text-white">You are here</p>
+                                <p class="text-xs text-slate-400">Onboarding</p>
+                            </div>
+                            <!-- Connector -->
+                            <div class="flex-1 h-1 bg-slate-700 rounded-full"></div>
+                            <!-- Node 2 -->
+                             <div class="text-center w-1/4">
+                                <div class="bg-slate-700 text-slate-400 p-2 rounded-full w-10 h-10 mx-auto flex items-center justify-center mb-2">
+                                    <i data-lucide="move-right"></i>
+                                </div>
+                                <p class="text-xs md:text-sm font-semibold text-white">Fast Track #1</p>
+                                <p class="text-xs text-slate-400">Universal Benefits 101</p>
+                            </div>
+                             <!-- Connector -->
+                            <div class="flex-1 h-1 bg-slate-700 rounded-full"></div>
+                             <!-- Node 3 -->
+                             <div class="text-center w-1/4">
+                                <div class="bg-slate-700 text-slate-400 p-2 rounded-full w-10 h-10 mx-auto flex items-center justify-center mb-2">
+                                    <i data-lucide="briefcase"></i>
+                                </div>
+                                <p class="text-xs md:text-sm font-semibold text-white">Fast Track #2</p>
+                                <p class="text-xs text-slate-400">ESG, Ethics 101</p>
+                            </div>
+                             <!-- Connector -->
+                            <div class="flex-1 h-1 bg-slate-700 rounded-full"></div>
+                            <!-- Node 4 -->
+                             <div class="text-center w-1/4">
+                                <div class="bg-slate-700 text-slate-400 p-2 rounded-full w-10 h-10 mx-auto flex items-center justify-center mb-2">
+                                    <i data-lucide="flag"></i>
+                                </div>
+                                <p class="text-xs md:text-sm font-semibold text-white">Fast Track #3</p>
+                                <p class="text-xs text-slate-400">Security 101</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Onboarding Scenario Simulator Module -->
+                <div class="glass-card p-6 rounded-xl">
+                    <div class="flex items-center gap-4 mb-4">
+                         <i data-lucide="box-select" class="w-6 h-6 text-sky-400"></i>
+                         <h2 class="text-xl font-bold text-white">EDC AI Assistant</h2>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-4">Ask 'any' questions to find relevant, quick answers pertaining to EDC.</p>
+                    <div class="bg-slate-900/80 p-4 rounded-lg">
+                        <div class="relative">
+                            <input type="text" placeholder="e.g., Ask anything?" class="w-full bg-slate-800 border border-slate-700 rounded-md py-2 pl-4 pr-10 text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                            <button class="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-sky-400">
+                                <i data-lucide="send"></i>
+                            </button>
+                        </div>
+                        <div class="flex flex-wrap gap-2 mt-3 text-xs">
+                            <button class="bg-slate-700/50 hover:bg-slate-700 px-3 py-1 rounded-full transition-colors">How to claim medical reimbursement?</button>
+                            <button class="bg-slate-700/50 hover:bg-slate-700 px-3 py-1 rounded-full transition-colors">How to obtain my T4 statement?</button>
+                            <button class="bg-slate-700/50 hover:bg-slate-700 px-3 py-1 rounded-full transition-colors">Guide me to raise a IT ticket for a new laptop purchase.</button>
+                        </div>
+                         <!-- Simulated AI Response -->
+                        <div id="sandbox-response" class="mt-4 p-4 bg-slate-800 rounded-md text-sm text-slate-300 hidden">
+                            <p class="font-semibold text-sky-400 mb-2">Simulation Result:</p>
+                            <p>Open Service Now -> Click on IT -> Go to Purchase request -> New Laptop -> Fill Details and  click<span class="font-bold text-white"> Submit</span></p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Onboarding Support Simulator -->
+            <div class="lg:col-span-1 flex flex-col gap-6">
+                 <div class="glass-card p-6 rounded-xl">
+                    <div class="flex items-center gap-4 mb-4">
+                        <i data-lucide="bar-chart-3" class="w-6 h-6 text-sky-400"></i>
+                        <h2 class="text-xl font-bold text-white">Your Profile </h2>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-6">These reflect your onboarding profile completion status.</p>
+                    <div class="space-y-4">
+                        <!-- Skill 1 -->
+                        <div>
+                            <div class="flex justify-between items-baseline mb-1">
+                                <span class="text-sm font-medium text-white">Trainings</span>
+                                <span class="text-xs font-semibold text-rose-400">Status: 80%</span>
+                            </div>
+                            <div class="w-full bg-slate-700 rounded-full h-2.5">
+                                <div class="bg-rose-500 h-2.5 rounded-full" style="width: 20%"></div>
+                            </div>
+                        </div>
+                         <!-- Skill 2 -->
+                        <div>
+                            <div class="flex justify-between items-baseline mb-1">
+                                <span class="text-sm font-medium text-white">Profile</span>
+                                <span class="text-xs font-semibold text-red-400">Status: 100%</span>
+                            </div>
+                            <div class="w-full bg-slate-700 rounded-full h-2.5">
+                                <div class="bg-red-500 h-2.5 rounded-full" style="width: 0%"></div>
+                            </div>
+                        </div>
+                         <!-- Skill 3 -->
+                        <div>
+                            <div class="flex justify-between items-baseline mb-1">
+                                <span class="text-sm font-medium text-white">Appraisal</span>
+                                <span class="text-xs font-semibold text-amber-400">Status: 45%</span>
+                            </div>
+                            <div class="w-full bg-slate-700 rounded-full h-2.5">
+                                <div class="bg-amber-500 h-2.5 rounded-full" style="width: 55%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="glass-card p-6 rounded-xl">
+                    <div class="flex items-center gap-4 mb-4">
+                         <i data-lucide="sparkles" class="w-6 h-6 text-sky-400"></i>
+                         <h2 class="text-xl font-bold text-white">Onboarding Support Simulator</h2>
+                    </div>
+                    <p class="text-sm text-slate-400 mb-6">Personalized, actionable recommendations to help you close your skill gaps and advance on your path.</p>
+                    
+                    <div class="space-y-4">
+                        <!-- Recommendation Card 1: Mentorship -->
+                        <div class="bg-slate-900/80 p-4 rounded-lg flex items-start gap-4 hover:bg-slate-800/70 transition-colors border border-transparent hover:border-sky-500/50">
+                            <div class="bg-sky-500/20 text-sky-400 p-2 rounded-md mt-1">
+                                <i data-lucide="users"></i>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-white">Find a Mentor</p>
+                                <p class="text-sm text-slate-400 mb-2">Connect with <span class="font-bold text-slate-300">Frank Miller</span>, who made a similar career move. He can guide you on leadership skills.</p>
+                                <button class="text-xs font-semibold text-sky-400 hover:text-sky-300">Facilitate Introduction &rarr;</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Recommendation Card 2: Project -->
+                         <div class="bg-slate-900/80 p-4 rounded-lg flex items-start gap-4 hover:bg-slate-800/70 transition-colors border border-transparent hover:border-sky-500/50">
+                            <div class="bg-sky-500/20 text-sky-400 p-2 rounded-md mt-1">
+                                <i data-lucide="rocket"></i>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-white">Join a Project</p>
+                                <p class="text-sm text-slate-400 mb-2">"Project Phoenix" needs a marketing lead. This is an ideal chance to gain hands-on <span class="font-bold text-slate-300">leadership experience</span>.</p>
+                                <button class="text-xs font-semibold text-sky-400 hover:text-sky-300">View Project Details &rarr;</button>
+                            </div>
+                        </div>
+
+                        <!-- Recommendation Card 3: Knowledge -->
+                         <div class="bg-slate-900/80 p-4 rounded-lg flex items-start gap-4 hover:bg-slate-800/70 transition-colors border border-transparent hover:border-sky-500/50">
+                             <div class="bg-sky-500/20 text-sky-400 p-2 rounded-md mt-1">
+                                <i data-lucide="book-open"></i>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-white">Acquire Knowledge</p>
+                                <p class="text-sm text-slate-400 mb-2">Read the case study on "EDC project accelerator" to understand <span class="font-bold text-slate-300">market intake of GenAI applications</span> in a new product vertical.</p>
+                                <button class="text-xs font-semibold text-sky-400 hover:text-sky-300">Read Case Study &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // Simple script to simulate sandbox response
+        document.addEventListener('DOMContentLoaded', () => {
+            const sandboxInput = document.querySelector('input[type="text"]');
+            const sandboxButtons = document.querySelectorAll('.flex-wrap button');
+            const sandboxResponse = document.getElementById('sandbox-response');
+
+            const showResponse = () => {
+                sandboxResponse.classList.remove('hidden');
+            };
+            
+            sandboxButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    sandboxInput.value = button.textContent;
+                    showResponse();
+                });
+            });
+
+            sandboxInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    showResponse();
+                }
+            });
+            document.querySelector('.relative button').addEventListener('click', showResponse);
+        });
+    </script>
+</body>
+</html>

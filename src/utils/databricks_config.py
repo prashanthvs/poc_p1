@@ -1,0 +1,96 @@
+"""
+Databricks configuration module for Unity Catalog and AI/ML Models integration.
+"""
+import os
+from typing import Optional, Dict, Any
+from databricks.sdk import WorkspaceClient
+from databricks.sdk.service.catalog import VolumeInfo, VolumeType
+from databricks.sdk.service.ai import ModelServingEndpoint
+
+
+class DatabricksConfig:
+    """Configuration class for Databricks Unity Catalog and AI/ML Models."""
+    
+    def __init__(self):
+        self.workspace_url = os.getenv("DATABRICKS_WORKSPACE_URL")
+        self.access_token = os.getenv("DATABRICKS_ACCESS_TOKEN")
+        self.catalog_name = os.getenv("DATABRICKS_CATALOG", "main")
+        self.schema_name = os.getenv("DATABRICKS_SCHEMA", "default")
+        self.volume_name = os.getenv("DATABRICKS_VOLUME", "source_data")
+        self.vector_search_endpoint = os.getenv("DATABRICKS_VECTOR_SEARCH_ENDPOINT")
+        self.model_serving_endpoint = os.getenv("DATABRICKS_MODEL_SERVING_ENDPOINT")
+        
+        # Initialize workspace client
+        self._client: Optional[WorkspaceClient] = None
+    
+    @property
+    def client(self) -> WorkspaceClient:
+        """Get or create Databricks workspace client."""
+        if self._client is None:
+            if not self.workspace_url or not self.access_token:
+                raise ValueError(
+                    "DATABRICKS_WORKSPACE_URL and DATABRICKS_ACCESS_TOKEN must be set"
+                )
+            self._client = WorkspaceClient(
+                host=self.workspace_url,
+                token=self.access_token
+            )
+        return self._client
+    
+    @property
+    def volume_path(self) -> str:
+        """Get the full Unity Catalog volume path."""
+        return f"/Volumes/{self.catalog_name}/{self.schema_name}/{self.volume_name}"
+    
+    @property
+    def vector_search_index_name(self) -> str:
+        """Get the vector search index name."""
+        return f"{self.catalog_name}.{self.schema_name}.rag_embeddings"
+    
+    def get_volume_info(self) -> Optional[VolumeInfo]:
+        """Get information about the Unity Catalog volume."""
+        try:
+            return self.client.volumes.get(f"{self.catalog_name}.{self.schema_name}.{self.volume_name}")
+        except Exception as e:
+            print(f"Warning: Could not get volume info: {e}")
+            return None
+    
+    def create_volume_if_not_exists(self) -> VolumeInfo:
+        """Create Unity Catalog volume if it doesn't exist."""
+        try:
+            # Try to get existing volume
+            return self.client.volumes.get(f"{self.catalog_name}.{self.schema_name}.{self.volume_name}")
+        except Exception:
+            # Create new volume
+            return self.client.volumes.create(
+                catalog_name=self.catalog_name,
+                schema_name=self.schema_name,
+                name=self.volume_name,
+                volume_type=VolumeType.MANAGED
+            )
+    
+    def get_model_serving_endpoint(self) -> Optional[ModelServingEndpoint]:
+        """Get the model serving endpoint configuration."""
+        if not self.model_serving_endpoint:
+            return None
+        try:
+            return self.client.serving_endpoints.get(self.model_serving_endpoint)
+        except Exception as e:
+            print(f"Warning: Could not get model serving endpoint: {e}")
+            return None
+    
+    def get_vector_search_endpoint(self) -> Optional[Dict[str, Any]]:
+        """Get the vector search endpoint configuration."""
+        if not self.vector_search_endpoint:
+            return None
+        try:
+            # Note: This would need to be implemented based on the actual vector search API
+            # For now, return a placeholder
+            return {"endpoint_name": self.vector_search_endpoint}
+        except Exception as e:
+            print(f"Warning: Could not get vector search endpoint: {e}")
+            return None
+
+
+# Global configuration instance
+databricks_config = DatabricksConfig()

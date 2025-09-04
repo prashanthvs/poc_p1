@@ -1,10 +1,13 @@
 import os
 from typing import Literal, Optional
+import requests
 
 from langchain_openai import ChatOpenAI
 
+from ..utils.databricks_config import databricks_config
 
-Provider = Literal["together", "openai", "ollama"]
+
+Provider = Literal["together", "openai", "ollama", "databricks"]
 
 
 def get_llm(
@@ -19,6 +22,7 @@ def get_llm(
     - together: uses Together AI for Meta Llama models (e.g., "meta-llama/Meta-Llama-3.1-8B-Instruct")
     - openai: any OpenAI-compatible model
     - ollama: local Ollama server with llama models (e.g., "llama3.1")
+    - databricks: uses Databricks AI/ML Models serving endpoint
     """
 
     provider = provider or os.getenv("LLM_PROVIDER", "together").lower()
@@ -59,6 +63,73 @@ def get_llm(
             timeout=timeout,
         )
 
+    if provider == "databricks":
+        # Use Databricks AI/ML Models serving endpoint
+        return get_databricks_llm(model, temperature, timeout)
+
     raise ValueError(f"Unsupported LLM provider: {provider}")
+
+
+def get_databricks_llm(model: str, temperature: float, timeout: int):
+    """Get LLM from Databricks AI/ML Models serving endpoint."""
+    class DatabricksLLM:
+        def __init__(self, model: str, temperature: float, timeout: int):
+            self.model = model
+            self.temperature = temperature
+            self.timeout = timeout
+            self.endpoint = databricks_config.model_serving_endpoint
+            self.access_token = databricks_config.access_token
+            self.workspace_url = databricks_config.workspace_url
+            
+        def invoke(self, messages, **kwargs):
+            """Invoke the Databricks model serving endpoint."""
+            try:
+                # Prepare the request payload
+                payload = {
+                    "messages": self._format_messages(messages),
+                    "temperature": self.temperature,
+                    "max_tokens": kwargs.get("max_tokens", 1000)
+                }
+                
+                # Make request to Databricks serving endpoint
+                headers = {
+                    "Authorization": f"Bearer {self.access_token}",
+                    "Content-Type": "application/json"
+                }
+                
+                url = f"https://{self.workspace_url}/serving-endpoints/{self.endpoint}/invocations"
+                
+                response = requests.post(
+                    url,
+                    json=payload,
+                    headers=headers,
+                    timeout=self.timeout
+                )
+                response.raise_for_status()
+                
+                result = response.json()
+                return result.get("choices", [{}])[0].get("message", {}).get("content", "")
+                
+            except Exception as e:
+                print(f"Error calling Databricks model: {e}")
+                return "Error: Unable to get response from Databricks model"
+        
+        def _format_messages(self, messages):
+            """Format messages for Databricks API."""
+            formatted = []
+            for msg in messages:
+                if hasattr(msg, 'content'):
+                    formatted.append({
+                        "role": msg.type if hasattr(msg, 'type') else "user",
+                        "content": msg.content
+                    })
+                else:
+                    formatted.append(msg)
+            return formatted
+        
+        def __call__(self, messages, **kwargs):
+            return self.invoke(messages, **kwargs)
+    
+    return DatabricksLLM(model, temperature, timeout)
 
 

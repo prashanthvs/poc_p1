@@ -16,4 +16,4 @@ databricks-vectorsearch>=0.1.0
 databricks-ai>=0.1.0
 pyspark>=3.5.0
 delta-spark>=3.0.0
-
+PyYAML>=6.0 

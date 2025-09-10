@@ -5,7 +5,7 @@ import gradio as gr
 from dotenv import load_dotenv
 
 from src.rag.chain import create_rag_chain, create_databracks_rag_chain
-from src.utils import config_manager
+from src.utils.config import config
 
 # Load environment variables from .env file
 load_dotenv()

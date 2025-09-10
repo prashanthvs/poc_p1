@@ -11,7 +11,7 @@ from langchain_core.documents import Document
 
 from .llm_provider import get_llm
 from .graph import GraphRAGRetriever
-from ..utils.databricks_config import databricks_config
+from ..utils.config import config
 
 
 def load_retriever(index_dir: str, use_databricks: bool = False):
@@ -21,7 +21,7 @@ def load_retriever(index_dir: str, use_databricks: bool = False):
         from databricks.vector_search.client import VectorSearchClient
         vsc = VectorSearchClient()
         index = vsc.get_index(
-            endpoint_name=databricks_config.vector_search_endpoint,
+            endpoint_name=config.databricks.vector_search_endpoint,
             index_name=databricks_config.vector_search_index_name
         )
         # Using a Databricks foundation model for query embeddings

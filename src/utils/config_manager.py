@@ -6,7 +6,7 @@ import os
 import yaml
 from typing import Optional, Dict, Any
 from dataclasses import dataclass
-from .databricks_config import DatabricksConfig
+from databricks_config import DatabricksConfig
 
 @dataclass
 class LLMConfig:
@@ -42,7 +42,7 @@ class AppConfig:
 class ConfigManager:
     """Centralized configuration manager for the entire application."""
 
-    def __init__(self, config_path="config.yaml"):
+    def __init__(self, config_path="../src/utils/config.yaml"):
         with open(config_path, 'r') as f:
             self.config = yaml.safe_load(f)
 

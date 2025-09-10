@@ -133,5 +133,3 @@ class DatabricksConfig:
         except Exception as e:
             print(f"Warning: Could not get vector search endpoint: {e}")
             return None
-        
-databricks_config = DatabricksConfig()

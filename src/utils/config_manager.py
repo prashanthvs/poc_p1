@@ -6,7 +6,7 @@ import os
 import yaml
 from typing import Optional, Dict, Any
 from dataclasses import dataclass
-from databricks_config import DatabricksConfig
+from .databricks_config import DatabricksConfig
 
 @dataclass
 class LLMConfig:

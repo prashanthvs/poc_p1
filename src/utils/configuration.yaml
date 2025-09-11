@@ -5,13 +5,16 @@ app:
   title: "Maverick RAG"
 
 llm:
-  provider: "together" # Options: together, openai, ollama, databricks
-  model: "meta-llama/Meta-Llama-3.1-8B-Instruct"
+  provider: "ollama" # Options: together, openai, ollama, databricks
+  model: "llama3.1:8b"
   temperature: 0.2
   timeout: 60
   providers:
     together:
+      api_key: "your_together_api_key_here"
       base_url: "https://api.together.xyz/v1"
+    openai:
+      api_key: "your_openai_api_key_here"
     ollama:
       api_key: "ollama"
       base_url: "http://localhost:11434/v1"
@@ -26,12 +29,10 @@ data:
   use_databricks: false
 
 databricks:
+  workspace_url: "your_workspace_url.databricks.com"
+  access_token: "your_databricks_access_token"
   catalog: "main"
   schema: "default"
   volume: "source_data"
-  # These are sensitive and should be set via environment variables
-  # workspace_url: "your_workspace_url.databricks.com"
-  # access_token: "your_databricks_access_token"
-  # vector_search_endpoint: "your_vector_search_endpoint"
-  # model_serving_endpoint: "your_model_serving_endpoint"
-  
+  vector_search_endpoint: "your_vector_search_endpoint"
+  model_serving_endpoint: "your_model_serving_endpoint"

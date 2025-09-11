@@ -1,7 +1,6 @@
 faiss-cpu==1.8.0
 sentence-transformers==3.0.1
 gradio==4.41.0
-python-dotenv==1.0.1
 together==1.2.0
 ollama==0.3.1
 uvicorn==0.30.3
@@ -18,3 +17,6 @@ PyYAML>=6.0
 databricks-sdk
 unstructured[docx,markdown]
 python-magic
+python-docx
+docx2txt
+numpy<2.0.0

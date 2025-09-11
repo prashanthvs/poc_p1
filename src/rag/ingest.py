@@ -23,19 +23,12 @@ def load_documents(input_dir: str) -> List:
         raise FileNotFoundError(f"Input directory not found: {input_dir}")
     # Define a mapping from file extension to the appropriate loader class.
     # This tells the DirectoryLoader which parser to use for each file type.
-    loader_map = {
-        ".docx": UnstructuredWordDocumentLoader,
-        ".md": UnstructuredMarkdownLoader,
-        ".txt": TextLoader,
-    }
     loader = DirectoryLoader(
         input_dir,
-        glob="**/*",
-        loader_map=loader_map,
+        glob="**/*", # This will pick up all files
         show_progress=True,
         use_multithreading=True,
-        # This will silently ignore files it doesn't have a loader for (like .gitkeep)
-        silent_errors=True 
+        silent_errors=False # Set to False to see any loading errors
     )
     x = loader.load()
     print(x)

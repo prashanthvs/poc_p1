@@ -7,5 +7,3 @@ __all__ = [
     "build_faiss_index",
     "create_rag_chain",
 ]
-
-

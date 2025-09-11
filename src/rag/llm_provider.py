@@ -12,32 +12,35 @@ Provider = Literal["together", "openai", "ollama", "databricks"]
 def get_llm(
     provider: Optional[Provider] = None,
     model: Optional[str] = None,
-    temperature: float = 0.2,
-    timeout: int = 60,
+    api_key: Optional[str] = None,
+    temperature: float = None,
+    timeout: int = None,
 ):
     """Return a LangChain ChatModel configured for the chosen provider.
 
     Supported providers:
-    - together: uses Together AI for Meta Llama models (e.g., "meta-llama/Meta-Llama-3.1-8B-Instruct")
+    - together: uses Together AI for Meta Llama models
     - openai: any OpenAI-compatible model
-    - ollama: local Ollama server with llama models (e.g., "llama3.1")
+    - ollama: local Ollama server with llama models
     - databricks: uses Databricks AI/ML Models serving endpoint
     """
 
-    provider = provider or os.getenv("LLM_PROVIDER", "together").lower()
-    # Default to a Llama-family instruct model. User can override via LLAMA_MODEL.
-    model = model or os.getenv(
-        "LLAMA_MODEL", "meta-llama/Meta-Llama-3.1-8B-Instruct"
-    )
+    # Use configuration from config_manager as the primary source
+    llm_config = config_manager.llm
+    
+    provider = provider or llm_config.provider
+    model = model or llm_config.model
+    api_key = api_key if api_key is not None else llm_config.api_key
+    temperature = temperature if temperature is not None else llm_config.temperature
+    timeout = timeout or llm_config.timeout
 
     if provider == "together":
         # Configure OpenAI-compatible client with Together base URL
         # Requires TOGETHER_API_KEY
-        base_url = os.getenv("TOGETHER_BASE_URL", "https://api.together.xyz/v1")
         return ChatOpenAI(
             model=model,
-            api_key=os.environ.get("TOGETHER_API_KEY"),
-            base_url=base_url,
+            api_key=llm_config.api_key,
+            base_url=llm_config.base_url,
             temperature=temperature,
             timeout=timeout,
         )
@@ -46,18 +49,17 @@ def get_llm(
         # Native OpenAI
         return ChatOpenAI(
             model=model,
-            api_key=os.environ.get("OPENAI_API_KEY"),
+            api_key=llm_config.api_key,
             temperature=temperature,
             timeout=timeout,
         )
 
     if provider == "ollama":
         # Use OpenAI-compatible wrapper pointed at Ollama
-        base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434/v1")
         return ChatOpenAI(
             model=model,
-            api_key=os.environ.get("OLLAMA_API_KEY", "ollama"),
-            base_url=base_url,
+            api_key=llm_config.api_key,
+            base_url=llm_config.base_url,
             temperature=temperature,
             timeout=timeout,
         )
@@ -130,5 +132,3 @@ def get_databricks_llm(model: str, temperature: float, timeout: int):
             return self.invoke(messages, **kwargs)
     
     return DatabricksLLM(model, temperature, timeout)
-
-

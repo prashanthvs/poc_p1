@@ -5,10 +5,9 @@ Centralized, single-file configuration manager for the Maverick RAG application.
 import os, sys
 import yaml
 from pathlib import Path
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, List
 from dataclasses import dataclass, field, asdict
 from databricks.sdk import WorkspaceClient
-from mlflow.deployments import get_deploy_client
 
 # This makes path resolution independent of the current working directory.
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
@@ -32,7 +31,7 @@ class DatabricksConfig:
         if self._client is None:
             if not self.workspace_url or not self.access_token:
                 raise ValueError(
-                    "DATABRICKS_WORKSPACE_URL and DATABRICKS_ACCESS_TOKEN must be set for Databricks integration"
+                    "workspace_url and access_token must be set in configuration.yaml for Databricks integration"
                 )
             self._client = WorkspaceClient(host=self.workspace_url, token=self.access_token)
         return self._client
@@ -81,7 +80,6 @@ class ConfigManager:
     def __init__(self, config_path: str = None):
         if config_path is None:
             # Construct path relative to this file's location for robustness.
-            # This ensures the config file is found whether running from the root or from /notebooks.
             base_dir = Path(__file__).resolve().parent
             config_path = base_dir / "configuration.yaml"
 
@@ -99,13 +97,13 @@ class ConfigManager:
         if self._databricks is None:
             db_config = self.config.get("databricks", {})
             self._databricks = DatabricksConfig(
-                workspace_url=os.getenv("DATABRICKS_WORKSPACE_URL", db_config.get("workspace_url")),
-                access_token=os.getenv("DATABRICKS_ACCESS_TOKEN", db_config.get("access_token")),
-                catalog=os.getenv("DATABRICKS_CATALOG", db_config.get("catalog")),
-                schema=os.getenv("DATABRICKS_SCHEMA", db_config.get("schema")),
-                volume=os.getenv("DATABRICKS_VOLUME", db_config.get("volume")),
-                vector_search_endpoint=os.getenv("DATABRICKS_VECTOR_SEARCH_ENDPOINT", db_config.get("vector_search_endpoint")),
-                model_serving_endpoint=os.getenv("DATABRICKS_MODEL_SERVING_ENDPOINT", db_config.get("model_serving_endpoint"))
+                workspace_url=db_config.get("workspace_url"),
+                access_token=db_config.get("access_token"),
+                catalog=db_config.get("catalog"),
+                schema=db_config.get("schema"),
+                volume=db_config.get("volume"),
+                vector_search_endpoint=db_config.get("vector_search_endpoint"),
+                model_serving_endpoint=db_config.get("model_serving_endpoint")
             )
         return self._databricks
 
@@ -113,21 +111,16 @@ class ConfigManager:
     def llm(self) -> LLMConfig:
         if self._llm is None:
             llm_config = self.config.get("llm", {})
-            provider = os.getenv("LLM_PROVIDER", llm_config.get("provider"))
-            
-            api_key_env_map = {
-                "together": "TOGETHER_API_KEY", "openai": "OPENAI_API_KEY",
-                "ollama": "OLLAMA_API_KEY", "databricks": "DATABRICKS_ACCESS_TOKEN"
-            }
-            api_key = os.getenv(api_key_env_map.get(provider))
-            
+            provider = llm_config.get("provider")
+            provider_settings = llm_config.get("providers", {}).get(provider, {})
+
             self._llm = LLMConfig(
                 provider=provider,
-                model=os.getenv("LLAMA_MODEL", llm_config.get("model")),
-                temperature=float(os.getenv("LLM_TEMPERATURE", llm_config.get("temperature", 0.2))),
-                timeout=int(os.getenv("LLM_TIMEOUT", llm_config.get("timeout", 60))),
-                api_key=api_key,
-                base_url=llm_config.get("providers", {}).get(provider, {}).get("base_url")
+                model=llm_config.get("model"),
+                temperature=float(llm_config.get("temperature", 0.2)),
+                timeout=int(llm_config.get("timeout", 60)),
+                api_key=provider_settings.get("api_key"),
+                base_url=provider_settings.get("base_url")
             )
         return self._llm
 
@@ -145,7 +138,7 @@ class ConfigManager:
     def data(self) -> DataConfig:
         if self._data is None:
             data_config = self.config.get("data", {})
-            use_db = str(os.getenv("USE_DATABRICKS", data_config.get("use_databricks", "false"))).lower() == "true"
+            use_db = str(data_config.get("use_databricks", "false")).lower() == "true"
             self._data = DataConfig(
                 docs_dir=str(PROJECT_ROOT / data_config.get("docs_dir")),
                 index_dir=str(PROJECT_ROOT / data_config.get("index_dir")),
@@ -187,21 +180,19 @@ class ConfigManager:
         warnings: List[str] = []
 
         # Validate LLM provider API keys
-        if self.llm.provider == "together" and not self.llm.api_key:
-            errors.append("LLM_PROVIDER is 'together' but TOGETHER_API_KEY is not set.")
-        elif self.llm.provider == "openai" and not self.llm.api_key:
-            errors.append("LLM_PROVIDER is 'openai' but OPENAI_API_KEY is not set.")
+        if self.llm.provider in ["together", "openai"] and not self.llm.api_key:
+            errors.append(f"LLM_PROVIDER is '{self.llm.provider}' but its api_key is not set in configuration.yaml.")
 
         # Validate Databricks configuration if enabled
         if self.data.use_databricks:
             if not self.databricks.workspace_url:
-                errors.append("USE_DATABRICKS is true but DATABRICKS_WORKSPACE_URL is not set.")
+                errors.append("USE_DATABRICKS is true but databricks.workspace_url is not set.")
             if not self.databricks.access_token:
-                errors.append("USE_DATABRICKS is true but DATABRICKS_ACCESS_TOKEN is not set.")
+                errors.append("USE_DATABRICKS is true but databricks.access_token is not set.")
             if not self.databricks.vector_search_endpoint:
-                errors.append("USE_DATABRICKS is true but DATABRICKS_VECTOR_SEARCH_ENDPOINT is not set.")
+                errors.append("USE_DATABRICKS is true but databricks.vector_search_endpoint is not set.")
             if self.llm.provider == "databricks" and not self.databricks.model_serving_endpoint:
-                 errors.append("LLM_PROVIDER is 'databricks' but DATABRICKS_MODEL_SERVING_ENDPOINT is not set.")
+                 errors.append("LLM_PROVIDER is 'databricks' but databricks.model_serving_endpoint is not set.")
         
         # Validate local data paths if Databricks is not used
         else:
@@ -215,5 +206,4 @@ class ConfigManager:
         }
 
 # --- Create a Single, Global Instance for the Entire Application ---
-# This instance will be imported by other modules.
 config_manager = ConfigManager()

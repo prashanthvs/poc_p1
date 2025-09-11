@@ -9,8 +9,8 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.documents import Document
 
-from .llm_provider import get_llm
-from .graph import GraphRAGRetriever
+from src.rag.llm_provider import get_llm
+from src.rag.graph import GraphRAGRetriever
 # CORRECTED IMPORT
 from src.utils.config import config_manager
 

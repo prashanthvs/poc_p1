@@ -3,26 +3,42 @@
 import os
 from pathlib import Path
 from typing import List
-from langchain_community.document_loaders import TextLoader, DirectoryLoader
+from langchain_community.document_loaders import (
+    TextLoader,
+    DirectoryLoader,
+    UnstructuredWordDocumentLoader,
+    UnstructuredMarkdownLoader
+)
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 
 from .graph import build_and_save_graph
-from utils.config import config_manager as databricks_config
+from src.utils.config import config_manager as databricks_config
 
 def load_documents(input_dir: str) -> List:
     # (No changes to this function)
     directory = Path(input_dir)
     if not directory.exists():
         raise FileNotFoundError(f"Input directory not found: {input_dir}")
+    # Define a mapping from file extension to the appropriate loader class.
+    # This tells the DirectoryLoader which parser to use for each file type.
+    loader_map = {
+        ".docx": UnstructuredWordDocumentLoader,
+        ".md": UnstructuredMarkdownLoader,
+        ".txt": TextLoader,
+    }
     loader = DirectoryLoader(
         input_dir,
         glob="**/*",
-        loader_cls=TextLoader,
+        loader_map=loader_map,
         show_progress=True,
         use_multithreading=True,
+        # This will silently ignore files it doesn't have a loader for (like .gitkeep)
+        silent_errors=True 
     )
+    x = loader.load()
+    print(x)
     return loader.load()
 
 def build_faiss_index(docs_dir: str, index_dir: str) -> str:

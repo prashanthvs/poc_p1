@@ -147,8 +147,8 @@ class ConfigManager:
             data_config = self.config.get("data", {})
             use_db = str(os.getenv("USE_DATABRICKS", data_config.get("use_databricks", "false"))).lower() == "true"
             self._data = DataConfig(
-                docs_dir=data_config.get("docs_dir"),
-                index_dir=data_config.get("index_dir"),
+                docs_dir=str(PROJECT_ROOT / data_config.get("docs_dir")),
+                index_dir=str(PROJECT_ROOT / data_config.get("index_dir")),
                 use_databricks=use_db,
                 volume_path=self.databricks.volume_path if use_db else None
             )

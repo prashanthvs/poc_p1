@@ -12,7 +12,7 @@ from pyspark.sql.functions import col, lit, current_timestamp, from_json
 from delta.tables import DeltaTable
 import json
 
-from utils.config import config_manager as databricks_config
+from src.utils.config import config_manager as databricks_config
 
 
 class DeltaTableManager:

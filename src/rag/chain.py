@@ -12,7 +12,7 @@ from langchain_core.documents import Document
 from .llm_provider import get_llm
 from .graph import GraphRAGRetriever
 # CORRECTED IMPORT
-from utils.config import config_manager
+from src.utils.config import config_manager
 
 
 def load_retriever(index_dir: str, use_databricks: bool = False):

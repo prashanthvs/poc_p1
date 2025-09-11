@@ -3,7 +3,7 @@ from typing import Literal, Optional
 import requests
 
 from langchain_openai import ChatOpenAI
-from utils.config import config_manager
+from src.utils.config import config_manager
 
 
 Provider = Literal["together", "openai", "ollama", "databricks"]

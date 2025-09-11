@@ -2,8 +2,9 @@
 """
 Centralized, single-file configuration manager for the Maverick RAG application.
 """
-import os
+import os, sys
 import yaml
+from pathlib import Path
 from typing import Optional, Dict, Any
 from dataclasses import dataclass, field
 from databricks.sdk import WorkspaceClient
@@ -75,7 +76,9 @@ class AppConfig:
 class ConfigManager:
     """Manages all application configurations from a single source."""
 
-    def __init__(self, config_path: str = "src/utils/config.yaml"):
+    def __init__(self, config_path: str = None):
+        sys.path.append(str(Path.cwd().parent / "src/utils/"))
+        config_path = "src/utils/configuration.yaml"
         with open(config_path, 'r') as f:
             self.config = yaml.safe_load(f)
 

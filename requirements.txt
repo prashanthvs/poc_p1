@@ -16,5 +16,5 @@ pyspark>=3.5.0
 delta-spark>=3.0.0
 PyYAML>=6.0 
 databricks-sdk
-unstructured[docx]
+unstructured[docx,markdown]
 python-magic

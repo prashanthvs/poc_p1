@@ -2,9 +2,14 @@
 
 import os
 import gradio as gr
-from src.rag.chain import create_databracks_rag_chain
-from src.utils.config import config
+from dotenv import load_dotenv
 
+# --- CORRECTED IMPORTS ---
+from src.rag.chain import create_rag_chain, create_databricks_rag_chain
+from src.utils.config import config_manager # Changed 'config' to 'config_manager'
+
+# Load environment variables from .env file
+load_dotenv()
 
 # --- Custom CSS translated from new_mock.html ---
 CUSTOM_CSS = """
@@ -44,7 +49,7 @@ footer, .main-div { background-color: transparent !important; }
     height: 400px;
 }
 #chatbot .user-message, #chatbot .bot-message { border-radius: 0.5rem; }
-#chatbot .user-message { background-color: #1e293b; } /* slate-800 */
+#chatbot .user-message { background-color: #1e2b3b; } /* slate-800 */
 #chatbot .bot-message { background-color: #334155; } /* slate-700 */
 
 /* --- Input Area Styles --- */
@@ -209,5 +214,5 @@ if __name__ == "__main__":
     maverick_app.launch(
         server_name=config_manager.app.server_name,
         server_port=config_manager.app.server_port,
-        share=False
+        share=True
     )

@@ -77,8 +77,12 @@ class ConfigManager:
     """Manages all application configurations from a single source."""
 
     def __init__(self, config_path: str = None):
-        sys.path.append(str(Path.cwd().parent / "src/utils/"))
-        config_path = "src/utils/configuration.yaml"
+        if config_path is None:
+            # Construct path relative to this file's location for robustness.
+            # This ensures the config file is found whether running from the root or from /notebooks.
+            base_dir = Path(__file__).resolve().parent
+            config_path = base_dir / "configuration.yaml"
+
         with open(config_path, 'r') as f:
             self.config = yaml.safe_load(f)
 
@@ -161,4 +165,4 @@ class ConfigManager:
 
 # --- Create a Single, Global Instance for the Entire Application ---
 # This instance will be imported by other modules.
-config = ConfigManager()
+config_manager = ConfigManager()

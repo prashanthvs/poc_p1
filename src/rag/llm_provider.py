@@ -4,7 +4,7 @@ import requests
 
 from langchain_openai import ChatOpenAI
 
-from ..utils.databricks_config import databricks_config
+from ..utils.config import config_manager
 
 
 Provider = Literal["together", "openai", "ollama", "databricks"]

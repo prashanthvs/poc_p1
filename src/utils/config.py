@@ -6,10 +6,12 @@ import os, sys
 import yaml
 from pathlib import Path
 from typing import Optional, Dict, Any
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 from databricks.sdk import WorkspaceClient
 from mlflow.deployments import get_deploy_client
 
+# This makes path resolution independent of the current working directory.
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 # --- Configuration Data Classes ---
 
 @dataclass
@@ -162,6 +164,55 @@ class ConfigManager:
                 title=app_config.get("title")
             )
         return self._app
+
+    def get_config_summary(self) -> Dict[str, Any]:
+        """Return a dictionary summary of the current configuration."""
+        summary = {
+            "app": asdict(self.app),
+            "llm": asdict(self.llm),
+            "embedding": asdict(self.embedding),
+            "data": asdict(self.data),
+            "databricks": asdict(self.databricks)
+        }
+        # Censor sensitive keys
+        if summary["llm"].get("api_key"):
+            summary["llm"]["api_key"] = "********"
+        if summary["databricks"].get("access_token"):
+            summary["databricks"]["access_token"] = "********"
+        return summary
+
+    def validate_config(self) -> Dict[str, Any]:
+        """Validate the configuration and return status, errors, and warnings."""
+        errors: List[str] = []
+        warnings: List[str] = []
+
+        # Validate LLM provider API keys
+        if self.llm.provider == "together" and not self.llm.api_key:
+            errors.append("LLM_PROVIDER is 'together' but TOGETHER_API_KEY is not set.")
+        elif self.llm.provider == "openai" and not self.llm.api_key:
+            errors.append("LLM_PROVIDER is 'openai' but OPENAI_API_KEY is not set.")
+
+        # Validate Databricks configuration if enabled
+        if self.data.use_databricks:
+            if not self.databricks.workspace_url:
+                errors.append("USE_DATABRICKS is true but DATABRICKS_WORKSPACE_URL is not set.")
+            if not self.databricks.access_token:
+                errors.append("USE_DATABRICKS is true but DATABRICKS_ACCESS_TOKEN is not set.")
+            if not self.databricks.vector_search_endpoint:
+                errors.append("USE_DATABRICKS is true but DATABRICKS_VECTOR_SEARCH_ENDPOINT is not set.")
+            if self.llm.provider == "databricks" and not self.databricks.model_serving_endpoint:
+                 errors.append("LLM_PROVIDER is 'databricks' but DATABRICKS_MODEL_SERVING_ENDPOINT is not set.")
+        
+        # Validate local data paths if Databricks is not used
+        else:
+            if not os.path.exists(self.data.docs_dir):
+                warnings.append(f"Local docs_dir '{self.data.docs_dir}' does not exist.")
+
+        return {
+            "valid": len(errors) == 0,
+            "errors": errors,
+            "warnings": warnings
+        }
 
 # --- Create a Single, Global Instance for the Entire Application ---
 # This instance will be imported by other modules.

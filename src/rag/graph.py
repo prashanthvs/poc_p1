@@ -6,7 +6,7 @@ from graphframes import GraphFrame
 from typing import List
 from langchain_core.documents import Document
 
-from ..utils.databricks_config import databricks_config
+from utils.config import config_manager as databricks_config
 from .llm_provider import get_llm
 
 def get_spark_session() -> SparkSession:

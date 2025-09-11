@@ -21,8 +21,8 @@ embedding:
   provider: "huggingface"
 
 data:
-  docs_dir: "data/docs"
-  index_dir: "data/index/faiss"
+  docs_dir: "data/docs/sample_data"
+  index_dir: "data/index"
   use_databricks: false
 
 databricks:

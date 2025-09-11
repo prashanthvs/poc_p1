@@ -3,8 +3,7 @@ from typing import Literal, Optional
 import requests
 
 from langchain_openai import ChatOpenAI
-
-from ..utils.config import config_manager
+from utils.config import config_manager
 
 
 Provider = Literal["together", "openai", "ollama", "databricks"]
@@ -77,9 +76,9 @@ def get_databricks_llm(model: str, temperature: float, timeout: int):
             self.model = model
             self.temperature = temperature
             self.timeout = timeout
-            self.endpoint = databricks_config.model_serving_endpoint
-            self.access_token = databricks_config.access_token
-            self.workspace_url = databricks_config.workspace_url
+            self.endpoint = config_manager.databricks.model_serving_endpoint
+            self.access_token = config_manager.databricks.access_token
+            self.workspace_url = config_manager.databricks.workspace_url
             
         def invoke(self, messages, **kwargs):
             """Invoke the Databricks model serving endpoint."""

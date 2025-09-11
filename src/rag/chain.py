@@ -11,7 +11,8 @@ from langchain_core.documents import Document
 
 from .llm_provider import get_llm
 from .graph import GraphRAGRetriever
-from ..utils.config import config
+# CORRECTED IMPORT
+from utils.config import config_manager
 
 
 def load_retriever(index_dir: str, use_databricks: bool = False):
@@ -21,8 +22,9 @@ def load_retriever(index_dir: str, use_databricks: bool = False):
         from databricks.vector_search.client import VectorSearchClient
         vsc = VectorSearchClient()
         index = vsc.get_index(
-            endpoint_name=config.databricks.vector_search_endpoint,
-            index_name=databricks_config.vector_search_index_name
+            # CORRECTED CONFIGURATION ACCESS
+            endpoint_name=config_manager.databricks.vector_search_endpoint,
+            index_name=config_manager.databricks.vector_search_index_name
         )
         # Using a Databricks foundation model for query embeddings
         dvs = DatabricksVectorSearch(

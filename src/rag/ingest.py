@@ -9,7 +9,7 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 
 from .graph import build_and_save_graph
-from ..utils.databricks_config import databricks_config
+from utils.config import config_manager as databricks_config
 
 def load_documents(input_dir: str) -> List:
     # (No changes to this function)

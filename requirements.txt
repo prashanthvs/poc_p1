@@ -18,3 +18,4 @@ PyYAML>=6.0
 databricks-sdk
 unstructured[docx,markdown]
 python-magic
+seaborn

@@ -20,8 +20,8 @@ class DeltaTableManager:
     
     def __init__(self):
         self.spark = None
-        self.catalog_name = databricks_config.catalog_name
-        self.schema_name = databricks_config.schema_name
+        self.catalog_name = databricks_config.databricks.catalog
+        self.schema_name = databricks_config.databricks.schema
     
     def get_spark_session(self) -> SparkSession:
         """Get or create Spark session."""

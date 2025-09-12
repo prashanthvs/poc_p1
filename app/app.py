@@ -214,5 +214,5 @@ if __name__ == "__main__":
     maverick_app.launch(
         server_name=config_manager.app.server_name,
         server_port=config_manager.app.server_port,
-        share=True
+        share=False
     )

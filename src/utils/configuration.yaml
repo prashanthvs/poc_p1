@@ -1,7 +1,7 @@
 # configuration.yaml
 app:
   server_name: "0.0.0.0"
-  server_port: 8081
+  server_port: 7096
   title: "Maverick RAG"
 
 llm:

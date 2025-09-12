@@ -8,6 +8,5 @@ venv/
 dist/
 build/
 /.env
-data/index/
 notebooks/.ipynb_checkpoints/
 
